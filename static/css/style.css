@@ -1,0 +1,49 @@
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f6fa;
+}
+
+.sidebar {
+  background: #1f2937;
+  color: white;
+  min-height: 100vh;
+}
+
+.sidebar h3 {
+  font-weight: bold;
+}
+
+.sidebar .nav-link {
+  color: white;
+  padding: 15px 20px;
+  margin: 8px;
+  border-radius: 8px;
+}
+
+.sidebar .nav-link:hover {
+  background: #374151;
+}
+
+.sidebar .active {
+  background: #2563eb;
+}
+
+.content {
+  padding: 40px;
+}
+
+.card {
+  border: none;
+  border-radius: 12px;
+}
+
+.card h6 {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.card h3 {
+  font-size: 28px;
+  font-weight: bold;
+}

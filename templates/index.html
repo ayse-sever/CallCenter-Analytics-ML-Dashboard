@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Operasyonel Performans Dashboard</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- SOL MENÜ -->
+
+        <div class="col-md-3 sidebar">
+          <h3 class="text-center mt-4 mb-5">Operasyonel Performans Analizi</h3>
+
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link active menu-item" data-page="genel" href="#">
+                🏠 Genel Bakış
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link menu-item" data-page="operasyon" href="#">
+                📊 Operasyon Performansı
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link menu-item" data-page="sure" href="#">
+                ⏱️ Süre Analizi
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link menu-item" data-page="ekip" href="#">
+                👥 Ekip Analizi
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link menu-item" data-page="tahmin" href="#">
+                🤖 Tahmin
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- SAĞ TARAF -->
+
+        <div class="col-md-9 content">
+          <!-- GENEL -->
+
+          <div id="genel" class="page">
+            <h2>Genel Bakış</h2>
+
+            <hr />
+
+            <p>Yönetici dashboarduna hoş geldiniz.</p>
+
+            <div class="row mt-4">
+              <div class="col-md-3">
+                <div class="card shadow-sm p-3">
+                  <h6>Toplam Kayıt</h6>
+
+                  <h3>{{ total_records }}</h3>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="card shadow-sm p-3">
+                  <h6>Açık Olay</h6>
+
+                  <h3>{{ active_incidents }}</h3>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="card shadow-sm p-3">
+                  <h6>Ortalama Süre</h6>
+
+                  <h3>{{ average_resolution_hours }} Saat</h3>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="card shadow-sm p-3">
+                  <h6>Tamamlanan</h6>
+
+                  <h3>{{ completed_incidents }}</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- OPERASYON -->
+
+          <div id="operasyon" class="page">
+            <h2>Operasyon Performansı</h2>
+
+            <hr />
+
+            <!-- Priority -->
+
+            <div class="card shadow-sm p-3 mb-4">
+              <h5>Priority (Öncelik) Dağılımı</h5>
+
+              <canvas id="priorityChart"></canvas>
+            </div>
+
+            <!-- Category -->
+
+            <div class="card shadow-sm p-3 mb-4">
+              <h5>Kategori Dağılımı</h5>
+
+              <canvas id="categoryChart"></canvas>
+            </div>
+
+            <!-- Hour -->
+
+            <div class="card shadow-sm p-3 mb-4">
+              <h5>Yoğun Saatler</h5>
+
+              <canvas id="hourChart"></canvas>
+            </div>
+
+            <!-- SLA -->
+
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <div class="card shadow-sm p-3 h-100">
+                  <h5>SLA Durumu</h5>
+
+                  <div style="height: 300px">
+                    <canvas id="slaChart"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-4">
+                <div class="card shadow-sm p-3 h-100">
+                  <h5>SLA Başarı Oranı</h5>
+
+                  <div style="height: 300px">
+                    <canvas id="slaRateChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- SÜRE -->
+
+          <div id="sure" class="page">
+            <h2>Süre Analizi</h2>
+
+            <hr />
+
+            <div class="card shadow-sm p-3 mb-4">
+              <h5>Priority (Öncelik) Bazlı Ortalama Süre</h5>
+
+              <canvas id="resolutionPriorityChart"></canvas>
+            </div>
+
+            <div class="card shadow-sm p-3 mb-4">
+              <h5>Aylık Ortalama Süre</h5>
+
+              <canvas id="monthlyResolutionChart"></canvas>
+            </div>
+
+            <div class="card shadow-sm p-3">
+              <h5>En Uzun Süren Olaylar</h5>
+
+              <canvas id="longestIncidentChart"></canvas>
+            </div>
+          </div>
+
+          <!-- EKİP -->
+
+          <div id="ekip" class="page">
+            <h2>Ekip Analizi</h2>
+
+            <hr />
+
+            <div class="card shadow-sm p-3 mb-4">
+              <h5>Ekip Bazlı Incident Sayısı</h5>
+
+              <canvas id="teamChart"></canvas>
+            </div>
+
+            <div class="card shadow-sm p-3 mb-4">
+              <h5>Çalışan Bazlı Performans</h5>
+
+              <canvas id="employeeChart"></canvas>
+            </div>
+
+            <div class="card shadow-sm p-3">
+              <h5>Ekip Bazlı Ortalama Çözüm Süresi</h5>
+
+              <canvas id="teamResolutionChart"></canvas>
+            </div>
+          </div>
+
+          <!-- TAHMİN -->
+
+          <div id="tahmin" class="page">
+            <h2>Çözüm Süresi Tahmini</h2>
+
+            <hr />
+
+            <form action="/predict" method="POST">
+              <div class="row">
+                <!-- Priority -->
+
+                <div class="col-md-4 mb-3">
+                  <label class="form-label"> Priority (Öncelik) </label>
+
+                  <select class="form-select" name="priority" required>
+                    <option value="">Seçiniz</option>
+
+                    {% for priority in priorities %}
+
+                    <option value="{{ priority }}">{{ priority }}</option>
+
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <!-- Impact -->
+
+                <div class="col-md-4 mb-3">
+                  <label class="form-label"> Impact (Etki) </label>
+
+                  <select class="form-select" name="impact" required>
+                    <option value="">Seçiniz</option>
+
+                    {% for impact in impacts %}
+
+                    <option value="{{ impact }}">{{ impact }}</option>
+
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <!-- Urgency -->
+
+                <div class="col-md-4 mb-3">
+                  <label class="form-label"> Urgency (Aciliyet) </label>
+
+                  <select class="form-select" name="urgency" required>
+                    <option value="">Seçiniz</option>
+
+                    {% for urgency in urgencies %}
+
+                    <option value="{{ urgency }}">{{ urgency }}</option>
+
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <!-- Category -->
+
+                <div class="col-md-4 mb-3">
+                  <label class="form-label"> Category </label>
+
+                  <select class="form-select" name="category" required>
+                    <option value="">Seçiniz</option>
+
+                    {% for category in categories %}
+
+                    <option value="{{ category }}">{{ category }}</option>
+
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <!-- Subcategory -->
+
+                <div class="col-md-4 mb-3">
+                  <label class="form-label"> Subcategory </label>
+
+                  <select class="form-select" name="subcategory" required>
+                    <option value="">Seçiniz</option>
+
+                    {% for subcategory in subcategories %}
+
+                    <option value="{{ subcategory }}">{{ subcategory }}</option>
+
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <!-- Assignment Group -->
+
+                <div class="col-md-4 mb-3">
+                  <label class="form-label"> Assignment Group </label>
+
+                  <select class="form-select" name="assignment_group" required>
+                    <option value="">Seçiniz</option>
+
+                    {% for group in assignment_groups %}
+
+                    <option value="{{ group }}">{{ group }}</option>
+
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <!-- Reassignment Count -->
+
+                <div class="col-md-4 mb-3">
+                  <label class="form-label"> Reassignment Count </label>
+
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="reassignment_count"
+                    value="0"
+                    min="0"
+                    required
+                  />
+                </div>
+              </div>
+
+              <button class="btn btn-primary mt-3" type="submit">
+                Tahmin Yap
+              </button>
+            </form>
+
+            {% if selected_values %}
+
+            <div class="card shadow-sm mt-4 p-3">
+              <h5>Seçilen Değerler</h5>
+
+              <ul>
+                {% for key, value in selected_values.items() %}
+
+                <li><strong>{{ key }}:</strong> {{ value }}</li>
+
+                {% endfor %}
+              </ul>
+            </div>
+
+            {% endif %} {% if prediction_text %}
+
+            <div class="alert alert-success mt-4">
+              <h4>{{ prediction_text }}</h4>
+            </div>
+
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- VERİLER -->
+
+    <script id="priority-data" type="application/json">
+      {{ priority_counts | tojson }}
+    </script>
+
+    <script id="category-data" type="application/json">
+      {{ category_counts | tojson }}
+    </script>
+
+    <script id="hour-data" type="application/json">
+      {{ hour_counts | tojson }}
+    </script>
+
+    <script id="sla-rate-data" type="application/json">
+      {{ sla_rate_data | tojson }}
+    </script>
+
+    <script id="resolution-priority-data" type="application/json">
+      {{ priority_resolution | tojson }}
+    </script>
+
+    <script id="monthly-resolution-data" type="application/json">
+      {{ monthly_resolution | tojson }}
+    </script>
+
+    <script id="longest-incidents-data" type="application/json">
+      {{ longest_incidents | tojson }}
+    </script>
+
+    <script id="team-data" type="application/json">
+      {{ team_counts | tojson }}
+    </script>
+
+    <script id="employee-data" type="application/json">
+      {{ employee_counts | tojson }}
+    </script>
+
+    <script id="team-resolution-data" type="application/json">
+      {{ team_resolution | tojson }}
+    </script>
+
+    <script>
+      const activePage = "{{ active_page }}";
+    </script>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>
